@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<odoo>
+    <!-- Data records go here -->
+    <record id='library_book_action_categ' model='ir.actions.act_window'>
+        <field name="name">Library Books Categ</field>
+        <field name="res_model">library.book.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--<menuitem name="My Library" id="library_base_menu" />-->
+    <menuitem name="Books Category" id="library_book_menu_categ" parent="library_base_menu" action="library_book_action_categ"/>
+
+    <record id="library_book_view_form_categ" model="ir.ui.view">
+        <field name="name">Library Book Form Category</field>
+        <field name="model">library.book.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="author_ids" widget="many2many_tags"/>
+                        <field name="parent_path"/>
+                        <field name="parent_id"/>
+                        <field name="child_ids"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="library_book_view_tree_categ" model="ir.ui.view">
+            <field name="name">Library Book List Category</field>
+            <field name="model">library.book.category</field>
+            <field name="arch" type="xml">
+                    <tree>
+                            <field name="name"/>
+                            <field name="date_release"/>
+                    </tree>
+            </field>
+    </record>
+
+</odoo>

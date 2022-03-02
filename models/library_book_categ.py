@@ -4,12 +4,14 @@ from odoo.exceptions import ValidationError
 
 class BookCategory(models.Model):
     _name = 'library.book.category'
-    #_parent_store = True
-    #_parent_name = "parent_id"
+    _parent_store = True
+    _parent_name = "parent_id"
     parent_path = fields.Char(index=True)
     date_release= fields.Char(string="Date Release")
-    author_ids=fields.Char(string='ID Autores')
     name = fields.Char('Category')
+    author_ids=fields.Many2many(
+        'res.partner', relation='relation_table_categ', string='Authors',
+    )
     parent_id = fields.Many2one(
         'library.book.category', string='Parent Category', ondelete='restrict', index=True
     )
@@ -18,7 +20,7 @@ class BookCategory(models.Model):
     )
 
 
-    #@api.constrains('parent_id')
-    #def _check_hierarchy(self):
-    #    if not self._check_recursion():
-    #        raise models.ValidationError('Error! You cannot create recursive categories.')
+    @api.constrains('parent_id')
+    def _check_hierarchy(self):
+        if not self._check_recursion():
+            raise models.ValidationError('Error! You cannot create recursive categories.')

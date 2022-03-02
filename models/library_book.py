@@ -11,8 +11,8 @@ class LibraryBook(models.Model):
     short_name = fields.Char('Short Title', required=True, translate=True,
                              index=True)  # to use as the record representation
     notes = fields.Text('Internal Notes')
-    state = fields.Selection(
-        [('draft', 'Not Available'), ('available', 'Available'), ('lost', 'Lost')], 'State', default="draft")
+    state = fields.Selection([('draft', 'Not Available'), ('available', 'Available'), ('lost', 'Lost')], 'State',
+                             default="draft")
     description = fields.Html('Description')
     cover = fields.Binary('Book Cover')
     out_of_print = fields.Boolean('Out of print?)')
@@ -39,8 +39,9 @@ class LibraryBook(models.Model):
     authored_book_ids = fields.Many2many(
         'library.book', string='Authored Books', relation='library_book_res_partner_rel'
     )
-    _sql_contrains=[
-        ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'), ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
+    _sql_contrains = [
+        ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'),
+        ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
     ]
 
     @api.constrains('date_release')
@@ -48,5 +49,3 @@ class LibraryBook(models.Model):
         for record in self:
             if record.date_release and record.date_release > fields.Date.today():
                 raise models.ValidationError('Release date must be in the past')
-
-

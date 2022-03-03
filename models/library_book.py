@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from datetime import timedelta
+#from datetime import timedelta
 
 
 class LibraryBook(models.Model):
@@ -7,7 +7,6 @@ class LibraryBook(models.Model):
     _description = 'Library Book'  # para añadir un titulo mas user-friendly al modelo
     _order = 'date_release desc, name'  # ordena de el mas nuevo al mas antiguo, luego por el titulo
     _rec_name = 'short_name'
-    _inherit = 'res.partner'
     _order = 'name'
     cost_price = fields.Float('Book Cost', digits='Book Price')
     name = fields.Char('Title', required=True)

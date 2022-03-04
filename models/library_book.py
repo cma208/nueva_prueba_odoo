@@ -1,7 +1,9 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
-#from datetime import timedelta
+
+
+# from datetime import timedelta
 
 
 class LibraryBook(models.Model):
@@ -15,8 +17,9 @@ class LibraryBook(models.Model):
     short_name = fields.Char('Short Title', required=True, translate=True,
                              index=True)  # to use as the record representation
     notes = fields.Text('Internal Notes')
-    state = fields.Selection([('draft', 'Not Available'), ('available', 'Available'), ('borrowed', 'Borrowed'), ('lost', 'Lost')], 'State',
-                             default="draft")
+    state = fields.Selection(
+        [('draft', 'Not Available'), ('available', 'Available'), ('borrowed', 'Borrowed'), ('lost', 'Lost')], 'State',
+        default="draft")
     description = fields.Html('Description')
     cover = fields.Binary('Book Cover')
     out_of_print = fields.Boolean('Out of print?)')
@@ -55,18 +58,23 @@ class LibraryBook(models.Model):
         ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
     ]
 
+    def log_all_library_members(self):
+        # this is an empty recordset of model library member
+        library_member_model = self.env['library.member']
+        all_members = library_member_model.search([])
+        print("ALL MEMBERS", all_members)
+        return True
+
     @api.constrains('date_release')
     def _check_release_date(self):
         for record in self:
             if record.date_release and record.date_release > fields.Date.today():
                 raise models.ValidationError('Release date must be in the past')
 
-
     @api.depends('authored_book_ids')
     def _compute_count_books(self):
         for r in self:
-            r.count_books=len(r.authored_book_ids)
-
+            r.count_books = len(r.authored_book_ids)
 
     @api.depends('date_release')
     def _compute_age(self):
@@ -78,36 +86,37 @@ class LibraryBook(models.Model):
             else:
                 book.age_days = 0
 
-
     @api.model
     def is_allowed_transition(self, old_state, new_state):
-        allowed= [('draft','available'), ('available','borrowed'), ('borrowed','available'), ('available','lost'), ('borrowedd','lost'), ('lost', 'available')]
-        return (old_state,new_state) in allowed
+        allowed = [('draft', 'available'), ('available', 'borrowed'), ('borrowed', 'available'), ('available', 'lost'),
+                   ('borrowedd', 'lost'), ('lost', 'available')]
+        return (old_state, new_state) in allowed
+
     def change_state(self, new_state):
         for book in self:
             if book.is_allowed_transition(book.state, new_state):
-                book.state=new_state
+                book.state = new_state
             else:
-                msg=_('Moving from %s to %s in not allowed') %  (book.state, new_state)
+                msg = _('Moving from %s to %s in not allowed') % (book.state, new_state)
                 raise UserError(msg)
+
     def make_available(self):
         self.change_state('available')
+
     def make_borrowed(self):
         self.change_state('borrowed')
+
     def make_lost(self):
         self.change_state('lost')
 
+    def change_release_date(self):
+        self.ensure_one()
+        self.date_release = fields.Date.today()
+
+    def change_update_date(self):
+        self.ensure_one()
+        self.update({'date_release':fields.Datetime.now(), 'another_field':'value'})
 
 class SaleOrder(models.Model):
-    _inherit="sale.order"
+    _inherit = "sale.order"
     name_2 = fields.Char('Segundo Cliente')
-
-
-
-
-
-
-
-
-
-

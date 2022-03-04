@@ -19,6 +19,9 @@
             <form>
                 <group>
                     <group>
+                        <button name="create_categories" string="create Categories" type="object"/>
+                    </group>
+                    <group>
                         <field name="name"/>
                         <field name="author_ids" widget="many2many_tags"/>
                         <field name="parent_path"/>

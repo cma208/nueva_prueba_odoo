@@ -7,9 +7,10 @@ class BookCategory(models.Model):
     _parent_store = True
     _parent_name = "parent_id"
     parent_path = fields.Char(index=True)
-    date_release= fields.Char(string="Date Release")
+    date_release = fields.Char(string="Date Release")
     name = fields.Char('Category')
-    author_ids=fields.Many2many(
+    description = fields.Text('Description')
+    author_ids = fields.Many2many(
         'res.partner', relation='relation_table_categ', string='Authors',
     )
     parent_id = fields.Many2one(
@@ -19,6 +20,12 @@ class BookCategory(models.Model):
         'library.book.category', 'parent_id', string='Child Categories'
     )
 
+    def create_categories(self):
+        categ1 = {'name': 'Child category 1', 'description': 'Description for child 1'}
+        categ2 = {'name': 'Child category 2', 'description': 'Description for child 2'}
+        parent_category_val = {'name': 'Parent category', 'email': 'Description for parent category',
+                               'child_ids':[(0, 0, categ1), (0, 0, categ2)]}
+        record=self.env['library.book.category'].create(parent_category_val)
 
     @api.constrains('parent_id')
     def _check_hierarchy(self):

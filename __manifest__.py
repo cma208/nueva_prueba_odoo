@@ -9,6 +9,9 @@
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
+        'data/data_book.xml',
+        'data/res.partner.csv',
+        'data/library.book.csv',
         'views/library_book.xml',
         'views/library_book_categ.xml'
     ],

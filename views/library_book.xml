@@ -23,6 +23,8 @@
                         <button name="make_lost" string="Make Lost" type="object"/>
                         <field name="state" widget="statusbar"/>
                         <button name="log_all_library_members" string="Log Members" type="object"/>
+                        <button name="find_partner" string="Find Book" type="object"/>
+
                 </group>
                 <group>
                     <group>

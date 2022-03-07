@@ -34,7 +34,7 @@ class LibraryBook(models.Model):
         'res.currency', string='Currency'
     )
     author_ids = fields.Many2many(
-        'res.partner', relation='relation_table', string='Authors',
+        comodel_name='res.partner', relation='relation_table', string='Authors',
     )
     published_book_ids = fields.One2many(
         'library.book', 'publisher_id', string='Published Books'
@@ -53,10 +53,11 @@ class LibraryBook(models.Model):
         count_books=fields.Integer('Number of Authored Books', compute='_compute_count_books')
 
     )
-    _sql_contrains = [
+    """_sql_contrains = [
         ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'),
         ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
     ]
+    """
 
     def log_all_library_members(self):
         # this is an empty recordset of model library member
@@ -92,6 +93,14 @@ class LibraryBook(models.Model):
                    ('borrowedd', 'lost'), ('lost', 'available')]
         return (old_state, new_state) in allowed
 
+    def predicate(book):
+        if len(book.author_ids) > 1:
+            return True
+        return False
+
+    def books_with_multiple_authors(self, all_books):
+        return all_books.filter(lambda b: len(b.author_ids) > 1)
+
     def change_state(self, new_state):
         for book in self:
             if book.is_allowed_transition(book.state, new_state):
@@ -115,7 +124,20 @@ class LibraryBook(models.Model):
 
     def change_update_date(self):
         self.ensure_one()
-        self.update({'date_release':fields.Datetime.now(), 'another_field':'value'})
+        self.update({'date_release': fields.Datetime.now(), 'another_field': 'value'})
+
+    def find_book(self):
+        domain = ['|', '&', ('name', 'ilike', 'Book Name'), ('Category Name'), '&', ('name', 'ilike', 'Book Name 2'),
+                  ('category_id.name', 'ilike', 'Category Name 2')]
+        books = self.search(domain)
+        print(books)
+
+    def find_partner(self):
+        PartnerObj = self.env['res.partner']
+        domain = [('phone', '=', '1234')]
+        partner = PartnerObj.search(domain)
+        print(partner.name)
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"

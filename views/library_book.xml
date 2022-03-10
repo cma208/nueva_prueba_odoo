@@ -46,9 +46,21 @@
                 </group>
                 <group>
                     <field name="description"/>
+
+                    <button name="change_release_date" string="Update Date" type="object"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="library_book_view_form" model="ir.ui.view">
+        <field name="name">Library Book Rent</field>
+        <field name="model">library.book.rent</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
                     <button name="book_rent" string="Rent this book" type="object" class="btn-primary"/>
                     <button name="book_lost" string="Lost the Book" type="object" states="ongoing"/>
-                    <button name="change_release_date" string="Update Date" type="object"/>
                 </group>
             </form>
         </field>
